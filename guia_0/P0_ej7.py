@@ -1,5 +1,5 @@
 import numpy as np
-
+#resolvemos cada item
 # ITEM a)
 
 diag_0 = np.array([2, 2, 2])
