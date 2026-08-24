@@ -12,6 +12,7 @@ def pol_matrix(c, X):
     X = np.array(X, dtype=float)
     filas = X.shape[0]
     columnas = X.shape[1]
+#Averigua cuántas filas y cuántas columnas tiene la matriz para saber cuántas veces va a tener que repetir el cálculo.
     
     # Creamos una matriz vacía de ceros del mismo tamaño para guardar las respuestas
     Y = np.zeros((filas, columnas))
@@ -38,6 +39,15 @@ def pol_matrix(c, X):
             Y[i, j] = resultado_polinomio
             
     return Y
+"""
+EXPLICACION ULTIMO BUCLE:
+Una vez que tiene el número aislado (por ejemplo, el 2.0), entra al tercer bucle:
+for grado in range(len(c)).Este bucle recorre las posiciones de la lista de 
+coeficientes.coef = c[grado]: Va agarrando uno a uno los coeficientes
+(c_0, luego c_1, luego c_2).resultado_polinomio += coef * (valor_individual ** grado):
+Va acumulando la suma de la estructura matemática:Resultado = c_0*x^0 + c_1*x^1 + c_2*x^2 +... 
+Al terminar con esa celda, guarda el valor final en Y[i, j] y pasa a la siguiente combinación de fila y columna.
+"""
 
 
 #EJECUCIÓN DIRECTA
@@ -50,7 +60,7 @@ coeficientes = [1, 2, 3]
 # Calculamos Y = f(X) elemento a elemento
 Y_resultado = pol_matrix(coeficientes, X_prueba)
 
-print("EJERCICIO 10 COMPLETO")
+print("EJERCICIO 10")
 print("Matriz original X:")
 print(X_prueba)
 print("\nMatriz resultante Y = f(X) elemento a elemento:")
