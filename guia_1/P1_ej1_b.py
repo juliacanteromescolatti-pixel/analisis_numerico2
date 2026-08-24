@@ -46,7 +46,7 @@ def soltrsup_c(A, b):
             # A[:j, j] toma toda la columna j por encima de la diagonal
             b_actualizado[:j] -= A[:j, j] * x[j]
 
-    return x  # ¡Importante regresar el resultado!
+    return x 
 
 
 #MATRIZ DE PRUEBA PARA VERIFICAR
