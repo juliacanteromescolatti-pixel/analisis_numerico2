@@ -69,7 +69,7 @@ u_numerico = np.concatenate(([0], u, [0]))     # Eje Y completo de 102 temperatu
 u_exacta = np.sin(np.pi * x_completo)
 
 #PASO 8: Visualización gráfica (EXTRA)
-# 1. Creamos el lienzo del gráfico con un tamaño de 10 cm de ancho por 6 de alto.
+# 1. Creamos el plano del gráfico con un tamaño de 10 cm de ancho por 6 de alto.
 plt.figure(figsize=(10, 6))
 
 # 2. Graficamos la aproximación numérica resuelta con tu Cholesky.
@@ -94,3 +94,19 @@ plt.legend()
 # 7. Ordenamos a matplotlib que renderice y despliegue el gráfico final en la pantalla.
 plt.show()
 
+
+"""
+EXPLICAION PASO 3:
+Es un despeje matemático. Lo que estás haciendo en el Paso 3 es agarrar la ecuación 
+diferencial que me dan, despejarla de forma que te queden todas las incógnitas ordenadas
+de izquierda a derecha, y meter esos coeficientes (los números que multiplican a las u)
+en los casilleros correspondientes de la matriz A.  
+Es deir: El Despeje: Al meter la aproximación en -u''(x_i) = f(x_i), el signo menos 
+de la ecuación te cambia los signos de todo lo de adentro. Al limpiarla, 
+te queda ordenada nodo por nodo:
+(-1/h^2)*u_(i-1) + (2/h^2)*u_i + (-1/h^2)u_(i+1) = f(x_i)
+La Matriz: Como tenés 100 ecuaciones acopladas (una para cada punto de la barra), usás la matriz A
+como una "tabla organizadora".  La columna del medio (i) guarda el valor del nodo actual (2/h^2$).
+La columna izquierda (i-1) guarda el del vecino izquierdo (-1/h^2).  
+La columna derecha (i+1) guarda el del vecino derecho (-1/h^2). 
+"""
