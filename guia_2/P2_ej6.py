@@ -1,9 +1,18 @@
 
 import numpy as np
-from P1_ej1_a import soltrinf_f
-from P1
+import sys
+import os
 
-#Act :
+# Agrega la ruta de la carpeta que contiene a 'guia_1'
+# Reemplaza '/home/kmom/analisis_numerico2/' por tu ruta base si es otra
+sys.path.append('/home/kmom/analisis_numerico2/')
+
+# Ahora importas la función usando puntos (.) para las carpetas
+from guia_1.P1_ej1_a import soltrinf_f
+from guia_1.P1_ej1_b import soltrsup_f
+
+
+#Act 6 :
 """La consigna dice: Resolver Ax=b usando descomposición LU con pivoteo.
 Eso significa que no resolvemos directamente Ax=b, sino que primero escribimos:
 PA=LU donde: P = matriz de pivoteo, L = triangular inferior, U = triangular superior"""
