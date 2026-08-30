@@ -1,7 +1,8 @@
 
 import numpy as np
-from guia_1 import P1_ej1_a
-from guia_1 import P1_ej1_b
+from P1_ej1_a import soltrinf_f
+from P1
+
 #Act :
 """La consigna dice: Resolver Ax=b usando descomposición LU con pivoteo.
 Eso significa que no resolvemos directamente Ax=b, sino que primero escribimos:
