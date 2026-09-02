@@ -31,29 +31,31 @@ def sol_egauss(A, b):
 # =======================================================================
 # TESTEO DEL EJERCICIO 11
 # =======================================================================
-if __name__ == "__main__":
-    print("--- TESTEO EJERCICIO 11 IMPORTANDO MÓDULOS ---")
+print("--- TESTEO EJERCICIO 11 ---")
 
-    # Datos del enunciado[cite: 1]
-    A = np.array([
+# Datos del enunciado
+A = np.array(
+    [
         [2, 1, 0, 4, -2],
         [8, 8, 2, 4, -1],
-        [6, 5, 3, 1,  4],
-        [2, 2, 2, 2,  1],
-        [1, 1, 1, 1, 15]
-    ])
+        [6, 5, 3, 1, 4],
+        [2, 2, 2, 2, 1],
+        [1, 1, 1, 1, 15],
+    ]
+)
 
-    b1 = np.array([10, 52, 50, 12, 12])
-    b2 = np.array([8, 50, 48, 12, 12])
+b1 = np.array([10, 52, 50, 12, 12])
+b2 = np.array([8, 50, 48, 12, 12])
 
-    # Resolver y testear para b1
-    x1 = sol_egauss(A, b1)
-    print("Solución para b1:")
-    print(x1)
-    print("Verificación Ax1 == b1:", np.allclose(A @ x1, b1))
+# Resolver y testear para b1
+x1 = sol_egauss(A, b1)
+print("Solución para b1:")
+print(x1)
+print("Verificación Ax1 == b1:", np.allclose(A @ x1, b1))
+print()
 
-    # Resolver y testear para b2
-    x2 = sol_egauss(A, b2)
-    print("Solución para b2:")
-    print(x2)
-    print("Verificación Ax2 == b2:", np.allclose(A @ x2, b2))
+# Resolver y testear para b2
+x2 = sol_egauss(A, b2)
+print("Solución para b2:")
+print(x2)
+print("Verificación Ax2 == b2:", np.allclose(A @ x2, b2))
