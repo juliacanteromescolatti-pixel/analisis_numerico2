@@ -18,7 +18,7 @@ from guia_1.P1_ej1_b import soltrsup_c
 def sol_egauss(A, b):
     """
     Utiliza eliminación Gaussiana con pivoteo parcial para resolver Ax = b.
-    Reutiliza las funciones importadas externamente.
+    Reutiliza las funciones ya realizadas.
     """
     # 1. Fase de Eliminación (reutiliza tu código importado)
     U, y = egaussp(A, b)
