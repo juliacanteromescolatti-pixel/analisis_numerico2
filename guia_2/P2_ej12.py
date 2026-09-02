@@ -53,6 +53,16 @@ def inv_lu(A):
         
     return A_inv
 
+"""PASO 2 EXPLICACION:
+1. Hallar A^-1 equivale a resolver n sistemas lineales A * x_j = e_j,
+    donde e_j es la j-ésima columna de la matriz identidad I, y x_j
+    será la j-ésima columna de la matriz inversa A_inv.
+2. Paso a Paso en el Bucle:
+    - e_j = I[:, j]: Selecciona el vector canónico de la columna j.
+    - b_perm = P @ e_j: Aplica la permutación de filas al término indep.
+    - y = soltrinf_f(L, b_perm): Resuelve el sistema triangular L * y = P * e_j (sust. adelante).
+    - x = soltrsup_f(U, y): Resuelve el sistema triangular U * x = y (sust. atrás).
+    - A_inv[:, j] = x: Guarda el vector x como la columna j de la matriz inversa."""
 
 #TESTEO (Con la matriz A del Ejercicio 11)
 print("--- TESTEO EJERCICIO 11 ---")
@@ -73,14 +83,11 @@ A_inv_resultado = inv_lu(A)
 print("Matriz Inversa calculada con inv_lu:")
 print(np.round(A_inv_resultado, 4))
 
-# Ese , 4 es el segundo argumento que recibe la función np.round(). 
-#Sirve para indicarle a Python cuántos decimales quieres que conserve al hacer el redondeo.
-    
-# Verificación automática comparando con NumPy
-print("¿El resultado coincide exactamente con np.linalg.inv?:")
-print(np.allclose(A_inv_resultado, np.linalg.inv(A)))
+# Ese 4 es el segundo argumento que recibe la función np.round(). 
+#np.round(): Sirve para redondear los elementos de una matriz al número de decimales que quiero.
 
-"""np.allclose: Sirve para comparar si dos matrices son numéricamente "iguales", 
-tolerando los pequeñísimos errores de precisión decimal que genera la computadora.
-np.round: Sirve para redondear los elementos de una matriz al número de decimales 
-que quieros."""
+#Extra: usamos la funcion de Numpy: np.linalg.inv para calular la inversa directamente
+print("¿El resultado coincide exactamente con np.linalg.inv?:")
+print(np.allclose(A_inv_resultado, np.linalg.inv(A))) #Comparamos la matriz obtenida por numpy y por nuestro codigo
+#Sabiendo que: np.allclose: Sirve para comparar si dos matrices son numéricamente "iguales"
+
