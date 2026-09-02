@@ -22,7 +22,7 @@ from P2_ej10 import dlup
 def inv_lu(A):
     """
     Calcula la inversa de una matriz A utilizando descomposición LU 
-    con permutaciones resolviendo n sistemas lineales con tus funciones previas.
+    con permutaciones resolviendo n sistemas lineales funciones previas.
     """
     n = A.shape[0]
     
