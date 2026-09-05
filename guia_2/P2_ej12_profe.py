@@ -1,12 +1,21 @@
-
 import numpy as np
-
 import sys
-sys.path.append('..')
-from practico1.ejercicio_1b import sol_trisup_col
-from practico1.ejercicio_1b import sol_trinf_col
+import os
 
-from ejercicio_10 import dlup 
+# Agrega la ruta de la carpeta que contiene a 'guia_1'
+# Reemplaza '/home/kmom/analisis_numerico2/' por tu ruta base si es otra
+sys.path.append('/home/kmom/analisis_numerico2/')
+
+# Ahora importas la función usando puntos (.) para las carpetas
+# Del Práctico 1 (Ej. 1a): Sustitución hacia adelante para Ly = b
+from guia_1.P1_ej1_a import soltrinf_f, soltrinf_c
+
+# Del Práctico 1 (Ej. 1b): Sustitución hacia atrás para Ux = y
+from guia_1.P1_ej1_b import soltrsup_f, soltrsup_c
+
+
+# Del Práctico 2 (Ej. 10): Descomposición LU con pivoteo parcial (PA = LU)
+from P2_ej10_profe import dlup
 
 
 def inv_lu(A):
@@ -15,8 +24,8 @@ def inv_lu(A):
     inv_A = np.zeros((n,n))
     U, L, P = dlup(A)
     for k in range(n):
-        y = sol_trinf_col(L, P@I[k])
-        x = sol_trisup_col(U, y)
+        y = soltrinf_c(L, P@I[k])
+        x = soltrsup_c(U, y)
         inv_A[:, k] = x 
     return inv_A
 

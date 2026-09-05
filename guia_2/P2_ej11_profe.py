@@ -1,15 +1,25 @@
-import numpy as np 
-
+import numpy as np
 import sys
-sys.path.append('..')
+import os
 
-from practico1.ejercicio_1b import sol_trisup_col
-from ejercicio_10 import egaussp
+# Agrega la ruta de la carpeta que contiene a 'guia_1'
+# Reemplaza '/home/kmom/analisis_numerico2/' por tu ruta base si es otra
+sys.path.append('/home/kmom/analisis_numerico2/')
 
+# Ahora importas la función usando puntos (.) para las carpetas
+# Del Práctico 1 (Ej. 1a): Sustitución hacia adelante para Ly = b
+from guia_1.P1_ej1_a import soltrinf_f
+
+# Del Práctico 1 (Ej. 1b): Sustitución hacia atrás para Ux = y
+from guia_1.P1_ej1_b import soltrsup_f, soltrsup_c
+
+
+# Del Práctico 2 (Ej. 10): 
+from P2_ej10_profe import egaussp
 
 def sol_egauss(A,b):
     U, y = egaussp(A,b)
-    x = sol_trisup_col(U, y)
+    x = soltrsup_c(U, y)
 
     return x
 
