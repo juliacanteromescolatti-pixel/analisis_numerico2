@@ -1,10 +1,16 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-# 1. Cargar las matrices original y el vector b
-# Asegurate de que A_dataset.txt y b_dataset.txt estén en la misma carpeta
+# Cargar archivos de texto
+
+
+
+# Carga directa si el script .py y los archivos .txt están en la misma carpeta
 A = np.loadtxt("A_dataset.txt")
 b = np.loadtxt("b_dataset.txt")
+
+print(f"Matriz A: {A.shape}")
+print(f"Vector b: {b.shape}")
 
 # Solución exacta del sistema original
 x = np.linalg.solve(A, b)
