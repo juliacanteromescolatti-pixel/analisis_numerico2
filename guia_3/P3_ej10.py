@@ -14,8 +14,7 @@ def graficar_transformacion_esfera(epsilons):
 
     # Graficar la transformación A(eps) * X para cada epsilon
     for eps in epsilons:
-        A_eps = np.array([[1.0, 1.0 - eps],
-                          [0.0, 1.0]])
+        A_eps = np.array([[1.0, 1.0 - eps], [0.0, 1.0]])
         
         # Transformación de los puntos
         Y = A_eps @ X  
