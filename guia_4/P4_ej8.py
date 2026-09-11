@@ -78,27 +78,30 @@ if __name__ == "__main__":
         cond_A = np.linalg.cond(A)
         cond_AtA = np.linalg.cond(AtA)
 
-        # --- (a) Ecuación normal resuelta con NUESTRA Cholesky ---
+        #(a) Ecuación normal resuelta con Cholesky 
         # AtA x = Atb  ,  AtA = L L^T
-        try:
-            x_chol = cholesky(AtA, Atb)
-            err_chol = np.max(np.abs(x_chol - x_exacta))
-        except ValueError:
-            # Nuestra propia función detecta que AtA ya no es SDP
-            # (numéricamente) y avisa en vez de devolver cualquier cosa.
+        # Si el determinante es casi cero o negativo, Cholesky no se puede calcular
+        if np.linalg.det(AtA) <= 1e-15:
             err_chol = np.nan
+        else:
+            # Usamos la Cholesky estándar pasándole un solo dato como corresponde
+            L_numpy = np.linalg.cholesky(AtA)
+            x_chol = np.linalg.solve(L_numpy.T, np.linalg.solve(L_numpy, Atb))
+            err_chol = np.max(np.abs(x_chol - x_exacta))
 
-        # --- (a') Ecuación normal resuelta con LU + pivoteo (práctico 2) ---
-        # Acá reusamos sol_egauss del ejercicio 11 del práctico 2: resuelve
-        # el sistema cuadrado AtA x = Atb con eliminación Gaussiana con
-        # pivoteo parcial, exactamente como resolveríamos cualquier
-        # sistema lineal cuadrado.
+        #(a') Ecuación normal resuelta con LU + pivoteo (práctico 2) 
         x_lu = sol_egauss(AtA, Atb)
-        err_lu = np.max(np.abs(x_lu - x_exacta))
+        
+        # Si tu función da "None" porque la matriz es singular, le asignamos NaN
+        if x_lu is None:
+            err_lu = np.nan
+        else:
+            err_lu = np.max(np.abs(x_lu - x_exacta))
 
-        # --- (b) QR (práctico 4, ejercicio 7) ---
-        # Acá NO se arma AtA en ningún momento: se trabaja directo sobre A.
+        #(b) QR (práctico 4, ejercicio 7) 
         x_qr = sol_cuadmin(A, b)
         err_qr = np.max(np.abs(x_qr - x_exacta))
 
         print(f"{eps:8.0e} | {cond_A:10.2e} | {cond_AtA:10.2e} | "f"{err_chol:10.2e} | {err_lu:10.2e} | {err_qr:10.2e}")
+
+#np.nan significa "No es un Número", es decir pude ser 0/0 o infinito/infinito.
