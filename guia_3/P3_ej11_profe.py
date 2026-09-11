@@ -69,3 +69,8 @@ for i in range(n):
         A_mal_cond[i, j] = 1 / (i + j + 1)
 
 matriz_per(A_mal_cond, b)
+
+"""
+A diferencia del mio, es este grafico se usa otra escala 
+
+"""
