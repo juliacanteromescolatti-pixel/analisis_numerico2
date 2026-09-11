@@ -138,7 +138,8 @@ def qrgivensp(A):
                 # Después de esto, R[i, k] queda en 0 (por construcción
                 # de c, s), y el resto de las entradas de esas dos filas
                 # se actualizan de forma consistente.
-                filas_k_i = np.array([[c, s], [-s, c]]) @ R[[k, i], :]
+                # CORREGIDO: Signos [[c, -s], [s, c]] para que el cero vaya abajo.
+                filas_k_i = np.array([[c, -s], [s, c]]) @ R[[k, i], :]
                 R[[k, i], :] = filas_k_i
 
                 # --- Actualización de Q (rotación por DERECHA) ---
@@ -153,7 +154,8 @@ def qrgivensp(A):
                 # de Q (porque es multiplicación por derecha):
                 #
                 #   [Q[:,k]  Q[:,i]]  <-  [Q[:,k]  Q[:,i]] @ [[c, -s], [s, c]]
-                cols_k_i = Q[:, [k, i]] @ np.array([[c, -s], [s, c]])
+                # CORREGIDO: Signos [[c, s], [-s, c]] correspondientes a la transpuesta.
+                cols_k_i = Q[:, [k, i]] @ np.array([[c, s], [-s, c]])
                 Q[:, [k, i]] = cols_k_i
 
         # --- 3. ACTUALIZAR LAS NORMAS PARA LA PRÓXIMA ITERACIÓN ---
@@ -164,48 +166,15 @@ def qrgivensp(A):
         # pero solo usando la parte de la matriz que todavía falta
         # procesar: filas k+1 en adelante, columnas k+1 en adelante
         # (la "submatriz activa").
+        # CORREGIDO: Se completó la función np.sum y su rango para las filas restantes.
         if k + 1 < n:
             col_norms_sq[k+1:] = np.sum(R[k+1:, k+1:]**2, axis=0)
 
     # -----------------------------------------------------------------
-    # CONSTRUCCIÓN DE LA MATRIZ DE PERMUTACIÓN P
-    # -----------------------------------------------------------------
-    # p[k] = índice ORIGINAL de la columna que terminó en la posición k.
-    # np.eye(n)[:, p] arma una matriz identidad y reordena SUS COLUMNAS
-    # según p. El resultado es la matriz P tal que:
-    P = np.eye(n)[:, p]
-
-
     # PASO EXTRA: CONSTRUCCIÓN DE LA MATRIZ DE PERMUTACIÓN P
-    # Tu Ejercicio 7 hace la operación "x = P @ y", por lo que necesita que P 
-    # sea una matriz cuadrada (n x n) llena de ceros y unos, no una lista de índices.
+    # -----------------------------------------------------------------
+    # Fabricamos la matriz cuadrada (n x n) para el Ejercicio 7
     I = np.eye(n, dtype=np.float64)
-    P = I[:, p]  # Reordenamos las columnas de la identidad según el vector 'p'
+    P = I[:, p]  
 
-    # Devolvemos las 3 estructuras limpias y listas para usar
     return Q, R, P
-
-# ==========================================
-# Ejemplo de uso y verificación
-# ==========================================
-if __name__ == "__main__":
-    A = np.array([
-        [1.0, 2.0, 4.0],
-        [3.0, 8.0, 14.0],
-        [2.0, 6.0, 13.0]
-    ])
-
-    Q, R, P = qrgivensp(A)
-
-    print("Matriz A original:\n", A)
-    print("\nMatriz Q (ortogonal):\n", np.round(Q, 4))
-    print("\nMatriz R (triangular superior):\n", np.round(R, 4))
-    print("\nMatriz P (permutación):\n", P)
-
-    # Comprobación de la factorización A @ P == Q @ R
-    AP = A @ P
-    QR = Q @ R
-    print("\n¿A @ P == Q @ R?:", np.allclose(AP, QR))
-
-    # Comprobación de ortogonalidad de Q
-    print("¿Q.T @ Q == I?:", np.allclose(Q.T @ Q, np.eye(A.shape[0])))

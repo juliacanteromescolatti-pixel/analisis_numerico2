@@ -125,69 +125,17 @@ from P4_ej4 import qrgivensp  # tu función del ejercicio 4: A @ P = Q @ R
 #
 # Y ESO es lo que devuelve sol_cuadmin.
 # =============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+import os
 
+#importamos funciones que luego usaremos
+sys.path.append('/home/kmom/analisis_numerico2')
+sys.path.append('/home/kmom/analisis_numerico2/guia_1')
 
-def resolver_triangular_superior(R1, c1):
-    """
-    Resuelve el sistema triangular superior  R1 @ y = c1  mediante
-    SUSTITUCIÓN HACIA ATRÁS (back-substitution).
-
-    R1 : np.ndarray, forma (n, n), triangular superior
-         (lo que está debajo de la diagonal se ignora / es ~0).
-    c1 : np.ndarray, forma (n,)
-
-    IDEA DEL ALGORITMO, con un ejemplo concreto n=3:
-    Un sistema triangular superior se ve así:
-
-        R1[0,0]*y0 + R1[0,1]*y1 + R1[0,2]*y2 = c1[0]     <- fila 0
-                     R1[1,1]*y1 + R1[1,2]*y2 = c1[1]     <- fila 1
-                                  R1[2,2]*y2 = c1[2]     <- fila 2
-
-    Fijate que la ÚLTIMA fila (fila 2) tiene UNA SOLA incógnita: y2.
-    Entonces la despejamos directo:
-
-        y2 = c1[2] / R1[2,2]
-
-    Ahora que ya conocemos y2 (es un número, no una incógnita), la
-    PENÚLTIMA fila (fila 1) también queda con una sola incógnita
-    desconocida (y1), porque y2 ya lo podemos reemplazar:
-
-        y1 = ( c1[1] - R1[1,2]*y2 ) / R1[1,1]
-
-    Y así seguimos subiendo, fila por fila, hasta llegar a la fila 0,
-    donde y1 e y2 ya son conocidos:
-
-        y0 = ( c1[0] - R1[0,1]*y1 - R1[0,2]*y2 ) / R1[0,0]
-
-    Por eso el algoritmo se llama "hacia atrás": vas resolviendo desde
-    la ÚLTIMA fila hacia la PRIMERA (al revés de cómo se suele escribir
-    el sistema). En código, por eso el for recorre
-    range(n-1, -1, -1) = [n-1, n-2, ..., 1, 0].
-    """
-    n = R1.shape[0]
-    y = np.zeros(n)  # acá vamos a ir guardando las soluciones que calculamos
-
-    # i recorre n-1, n-2, ..., 1, 0  (de la última fila a la primera)
-    for i in range(n - 1, -1, -1):
-
-        # R1[i, i+1:]  son los coeficientes de la fila i que multiplican
-        # a las incógnitas y[i+1], y[i+2], ..., y[n-1] -- TODAS ellas ya
-        # las calculamos en vueltas anteriores del for (porque i+1 > i
-        # significa "filas ya procesadas").
-        #
-        # y[i+1:]  son justamente esos valores ya calculados.
-        #
-        # El producto punto R1[i, i+1:] @ y[i+1:]  calcula exactamente
-        # la suma  R1[i,i+1]*y[i+1] + R1[i,i+2]*y[i+2] + ... + R1[i,n-1]*y[n-1]
-        # osea, "todo lo que ya sabemos" de la ecuación i.
-        suma_terminos_conocidos = R1[i, i + 1:] @ y[i + 1:]
-
-        # La ecuación i completa es:
-        #     R1[i,i]*y[i] + suma_terminos_conocidos = c1[i]
-        # Despejamos y[i]:
-        y[i] = (c1[i] - suma_terminos_conocidos) / R1[i, i]
-
-    return y
+from guia_1.P1_ej1_b import soltrsup_f
+from P4_ej4 import qrgivensp 
 
 
 def sol_cuadmin(A, b):
@@ -231,7 +179,7 @@ def sol_cuadmin(A, b):
     c1 = c[:n]
 
     #PASO 4: resolver el sistema triangular  R1 y = c1
-    y = resolver_triangular_superior(R1, c1)
+    y = soltrsup_f(R1, c1)
 
     #PASO 5: deshacer el cambio de variable  x = P y
     # Recordá: y = P^T x  =>  x = P y  (porque P ortogonal, P^{-1}=P^T)
