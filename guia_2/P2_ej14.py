@@ -12,18 +12,14 @@ def det_lu(A):
     # PASO 1: Obtenemos la descomposición PA = LU ya programada en el Ejercicio 10.
     # Recibimos las tres salidas. Llamamos 'P_salida' a la primera para analizarla.
     # Según la teoría, la descomposición devuelve P, L, U o L, U, P.
-    salida1, salida2, salida3 = dlup(A)
+
+    LU_compacta, P_matriz = dlup(A)
+    U = np.triu(LU_compacta)
     
-    # Para saber cuál es U (la triangular superior), buscamos cuál tiene ceros abajo.
-    # Por descarte, identificamos las matrices correctamente:
-    if np.allclose(salida1, np.triu(salida1)) == False and np.allclose(salida2, np.triu(salida2)) == False:
-        # Si la tercera salida es U (caso L, U, P)
-        U = salida2
-        P_matriz = salida3
-    else:
-        # Si la tercera salida es U (caso P, L, U)
-        U = salida3
-        P_matriz = salida1
+    # Como L y U están juntas en 'LU_compacta', extraemos U (triangular superior)
+    # np.triu elimina la parte de abajo de L y nos deja la U limpia
+    U = np.triu(LU_compacta)
+
     
     # PASO 2: Calculamos el determinante de la matriz triangular superior U.
     # Por propiedad matemática, el determinante de cualquier matriz triangular es 
