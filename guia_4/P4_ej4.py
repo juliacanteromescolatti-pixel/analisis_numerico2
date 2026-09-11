@@ -6,7 +6,6 @@ def qrgivensp(A):
     Factorización QR CON PIVOTEO DE COLUMNAS usando rotaciones de Givens.
 
     Idea general del algoritmo:
-    ----------------------------
     En la QR "común" (sin pivoteo) vas recorriendo columna por columna,
     de izquierda a derecha, y anulás los elementos debajo de la diagonal.
 
@@ -25,22 +24,17 @@ def qrgivensp(A):
     reordenadas por P antes de aplicar las rotaciones.
 
     Parámetros
-    ----------
     A : np.ndarray, forma (m, n)
         Matriz a factorizar.
 
     Retorna
-    -------
     Q : np.ndarray, forma (m, m)   -> matriz ortogonal (Q^T Q = I)
     R : np.ndarray, forma (m, n)   -> matriz triangular superior
     P : np.ndarray, forma (n, n)   -> matriz de permutación (0-1, una sola
                                     entrada "1" por fila y por columna)
     """
 
-    # -----------------------------------------------------------------
     # PASO 0: inicialización
-    # -----------------------------------------------------------------
-
     # Trabajamos sobre una COPIA de A (no queremos modificar la matriz
     # original que pasó el usuario) y forzamos float64 por si A viniera
     # con enteros (si no, las cuentas con Givens podrían truncarse).
@@ -71,12 +65,11 @@ def qrgivensp(A):
     # necesita rotación), y como mucho hay n columnas.
     limite = min(m - 1, n)
 
-    # -----------------------------------------------------------------
+
     # BUCLE PRINCIPAL: una iteración por cada columna "pivote" k
-    # -----------------------------------------------------------------
     for k in range(limite):
 
-        # --- 1. ELEGIR LA COLUMNA PIVOTE ---
+        #1. ELEGIR LA COLUMNA PIVOTE 
         # Entre las columnas k, k+1, ..., n-1, buscamos cuál tiene la
         # mayor norma (al cuadrado) TODAVÍA. col_norms_sq[k:] es el
         # sub-array de esas normas, y argmax me da la posición dentro
@@ -101,7 +94,7 @@ def qrgivensp(A):
             #     (más barato que volver a sumar cuadrados).
             col_norms_sq[k], col_norms_sq[idx_max] = col_norms_sq[idx_max], col_norms_sq[k]
 
-        # --- Caso columna (numéricamente) nula ---
+        #Caso columna (numéricamente) nula 
         # Si la norma de la columna que quedó en la posición k es
         # prácticamente 0, quiere decir que esa columna (restringida a
         # las filas que faltan procesar) ya es cero: no hay nada que
@@ -113,7 +106,7 @@ def qrgivensp(A):
         if col_norms_sq[k] < 1e-15:
             continue
 
-        # --- 2. ANULAR LOS ELEMENTOS DEBAJO DE LA DIAGONAL EN LA COLUMNA k ---
+        #2. ANULAR LOS ELEMENTOS DEBAJO DE LA DIAGONAL EN LA COLUMNA k 
         # Recorremos cada fila i por debajo de la diagonal (i = k+1 ... m-1)
         # y, de a una por vez, usamos una rotación de Givens para anular
         # la entrada R[i, k] usando como "referencia" la entrada R[k, k].
@@ -126,7 +119,7 @@ def qrgivensp(A):
                 # al par (R[k,k], R[i,k]) deja el segundo elemento en 0.
                 c, s = rotacion_givens_bloques(R[k, k], R[i, k])
 
-                # --- Actualización de R (rotación por IZQUIERDA) ---
+                #Actualización de R (rotación por IZQUIERDA) 
                 # Solo nos interesan las filas k e i (las demás filas no
                 # cambian). Tomamos esas dos filas completas de R,
                 # multiplicamos por la matriz de rotación 2x2, y
@@ -142,7 +135,7 @@ def qrgivensp(A):
                 filas_k_i = np.array([[c, -s], [s, c]]) @ R[[k, i], :]
                 R[[k, i], :] = filas_k_i
 
-                # --- Actualización de Q (rotación por DERECHA) ---
+                #Actualización de Q (rotación por DERECHA) 
                 # Cada vez que aplicamos G por izquierda a R (para ir
                 # armando G_p...G_1 A = R), tenemos que acumular en Q la
                 # transpuesta de esa rotación por derecha, para que al
@@ -158,7 +151,7 @@ def qrgivensp(A):
                 cols_k_i = Q[:, [k, i]] @ np.array([[c, s], [-s, c]])
                 Q[:, [k, i]] = cols_k_i
 
-        # --- 3. ACTUALIZAR LAS NORMAS PARA LA PRÓXIMA ITERACIÓN ---
+        #3. ACTUALIZAR LAS NORMAS PARA LA PRÓXIMA ITERACIÓN 
         # Como recién modificamos filas de R (las rotaciones cambian
         # TODAS las columnas de las filas k e i, no solo la columna k),
         # las normas de las columnas que faltan procesar (k+1 en
@@ -170,9 +163,7 @@ def qrgivensp(A):
         if k + 1 < n:
             col_norms_sq[k+1:] = np.sum(R[k+1:, k+1:]**2, axis=0)
 
-    # -----------------------------------------------------------------
     # PASO EXTRA: CONSTRUCCIÓN DE LA MATRIZ DE PERMUTACIÓN P
-    # -----------------------------------------------------------------
     # Fabricamos la matriz cuadrada (n x n) para el Ejercicio 7
     I = np.eye(n, dtype=np.float64)
     P = I[:, p]  
