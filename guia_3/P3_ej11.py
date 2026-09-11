@@ -3,14 +3,31 @@ import numpy as np
 
 # Cargar archivos de texto
 
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Cargar archivos de texto
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 1. Definir las rutas de los archivos (funcionan si abres la carpeta 'guia_3' en VS Code)
+ruta_archivo_A = 'A_dataset.txt'
+ruta_archivo_b = 'b_dataset.txt'
+
+# 2. Cargar los datos usando NumPy
+# (Usa 'loadtxt' para archivos de texto con números separados por espacios o tabulaciones)
+datos_A = np.loadtxt(ruta_archivo_A)
+datos_b = np.loadtxt(ruta_archivo_b)
+
+# --- Tu código para graficar o procesar con matplotlib va aquí abajo ---
+print("Archivos cargados con éxito.")
+print("Forma de A:", datos_A.shape)
+print("Forma de b:", datos_b.shape)
 
 
-# Carga directa si el script .py y los archivos .txt están en la misma carpeta
-A = np.loadtxt("A_dataset.txt")
-b = np.loadtxt("b_dataset.txt")
 
-print(f"Matriz A: {A.shape}")
-print(f"Vector b: {b.shape}")
+A = np.loadtxt(ruta_archivo_A)
+b = np.loadtxt(ruta_archivo_b)
 
 # Solución exacta del sistema original
 x = np.linalg.solve(A, b)
