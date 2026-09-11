@@ -165,7 +165,7 @@ def qrgivensp(A):
         # procesar: filas k+1 en adelante, columnas k+1 en adelante
         # (la "submatriz activa").
         if k + 1 < n:
-            col_norms_sq[k + 1:] = np.sum(R[k + 1:m, k + 1:]**2, axis=0)
+            col_norms_sq[k+1:] = np.sum(R[k+1:, k+1:]**2, axis=0)
 
     # -----------------------------------------------------------------
     # CONSTRUCCIÓN DE LA MATRIZ DE PERMUTACIÓN P
@@ -175,8 +175,15 @@ def qrgivensp(A):
     # según p. El resultado es la matriz P tal que:
     P = np.eye(n)[:, p]
 
-    return Q, R, P
 
+    # PASO EXTRA: CONSTRUCCIÓN DE LA MATRIZ DE PERMUTACIÓN P
+    # Tu Ejercicio 7 hace la operación "x = P @ y", por lo que necesita que P 
+    # sea una matriz cuadrada (n x n) llena de ceros y unos, no una lista de índices.
+    I = np.eye(n, dtype=np.float64)
+    P = I[:, p]  # Reordenamos las columnas de la identidad según el vector 'p'
+
+    # Devolvemos las 3 estructuras limpias y listas para usar
+    return Q, R, P
 
 # ==========================================
 # Ejemplo de uso y verificación
