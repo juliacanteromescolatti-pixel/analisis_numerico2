@@ -1,0 +1,139 @@
+# ============================================================
+# MATRICES POR BLOQUES - GUÍA COMPLETA
+# ============================================================
+import numpy as np
+from scipy.linalg import block_diag
+
+# ------------------------------------------------------------
+# CASO 1: Construcción directa con np.block()
+# ------------------------------------------------------------
+# Se arman los bloques por separado y se combinan indicando
+# la disposición como una lista de listas: [[A, B], [C, D]]
+# Los bloques de una misma FILA deben tener igual N° de filas.
+# Los bloques de una misma COLUMNA deben tener igual N° de columnas.
+
+A = np.array([[1, 2],
+              [3, 4]])          # bloque 2x2
+
+B = np.array([[5, 6],
+              [7, 8]])          # bloque 2x2
+
+C = np.array([[9, 10],
+              [11, 12]])        # bloque 2x2
+
+D = np.array([[13, 14],
+              [15, 16]])        # bloque 2x2
+
+M1 = np.block([
+    [A, B],   # primera fila de bloques
+    [C, D]    # segunda fila de bloques
+])
+
+print("CASO 1: np.block()")
+print(M1)
+print("Forma:", M1.shape, "\n")
+
+
+# ------------------------------------------------------------
+# CASO 2: Asignación por slicing (índices i:j, k:l)
+# ------------------------------------------------------------
+# Se crea primero una matriz vacía (de ceros) del tamaño total,
+# y se van "pintando" los bloques indicando en qué filas y
+# columnas va cada uno: M[fila_ini:fila_fin, col_ini:col_fin]
+
+n_filas, n_columnas = 5, 5
+M2 = np.zeros((n_filas, n_columnas))
+
+bloqueA = np.array([[1, 2],
+                     [3, 4]])          # 2x2
+bloqueB = np.array([[5, 6, 7]])        # 1x3
+bloqueC = np.array([[8, 9],
+                     [10, 11],
+                     [12, 13]])        # 3x2
+
+# M[i1:i2, j1:j2] -> toma filas desde i1 hasta i2-1, columnas desde j1 hasta j2-1
+M2[0:2, 0:2] = bloqueA   # filas 0-1, columnas 0-1
+M2[0:1, 2:5] = bloqueB   # fila 0, columnas 2-4
+M2[2:5, 0:2] = bloqueC   # filas 2-4, columnas 0-1
+
+print("CASO 2: Asignación por slicing")
+print(M2, "\n")
+
+
+# ------------------------------------------------------------
+# CASO 3: Función genérica para insertar un bloque
+# ------------------------------------------------------------
+def insertar_bloque(M, bloque, fila_ini, fila_fin, col_ini, col_fin):
+    """
+    Inserta 'bloque' dentro de la matriz M en el rango de filas
+    [fila_ini:fila_fin) y columnas [col_ini:col_fin).
+    No devuelve una copia: modifica M directamente (in-place).
+    """
+    M[fila_ini:fila_fin, col_ini:col_fin] = bloque
+    return M
+
+M3 = np.zeros((6, 6))
+bloque_identidad = np.eye(3)              # identidad 3x3
+bloque_full = np.full((3, 3), 7)          # bloque 3x3 relleno con 7s
+
+M3 = insertar_bloque(M3, bloque_identidad, 0, 3, 0, 3)  # esquina sup. izq.
+M3 = insertar_bloque(M3, bloque_full, 3, 6, 3, 6)       # esquina inf. der.
+
+print("CASO 3: Función insertar_bloque()")
+print(M3, "\n")
+
+
+# ------------------------------------------------------------
+# CASO 4: Extraer (recortar) bloques de una matriz existente
+# ------------------------------------------------------------
+# Misma lógica de slicing, pero en sentido inverso: en vez de
+# asignar, se lee un sub-rango de la matriz ya construida.
+
+sub_bloque = M2[2:5, 0:3]   # filas 2-4, columnas 0-2 de M2
+print("CASO 4: Extracción de bloque (submatriz de M2)")
+print(sub_bloque, "\n")
+
+
+# ------------------------------------------------------------
+# CASO 5: Matriz diagonal por bloques
+# ------------------------------------------------------------
+# Coloca los bloques en la diagonal principal y rellena el
+# resto con ceros automáticamente. Útil para matrices de
+# covarianza, sistemas desacoplados, etc.
+
+M5 = block_diag(A, D)   # A y D en la diagonal
+print("CASO 5: Matriz diagonal por bloques (block_diag)")
+print(M5, "\n")
+
+
+# ------------------------------------------------------------
+# CASO 6: División automática de una matriz grande en bloques
+# de tamaño fijo (sin poner los índices a mano)
+# ------------------------------------------------------------
+def dividir_en_bloques(M, filas_por_bloque, columnas_por_bloque):
+    """
+    Divide la matriz M en una lista de bloques de tamaño
+    (filas_por_bloque x columnas_por_bloque), recorriendo
+    la matriz de arriba hacia abajo y de izquierda a derecha.
+    Devuelve una lista de listas (matriz de bloques).
+    """
+    n, m = M.shape
+    bloques = []
+    for i in range(0, n, filas_por_bloque):
+        fila_bloques = []
+        for j in range(0, m, columnas_por_bloque):
+            bloque = M[i:i+filas_por_bloque, j:j+columnas_por_bloque]
+            fila_bloques.append(bloque)
+        bloques.append(fila_bloques)
+    return bloques
+
+M6 = np.arange(1, 17).reshape(4, 4)  # matriz 4x4 con números 1 al 16
+bloques_M6 = dividir_en_bloques(M6, 2, 2)  # bloques de 2x2
+
+print("CASO 6: División automática en bloques de 2x2")
+print("Matriz original:")
+print(M6, "\n")
+for i, fila in enumerate(bloques_M6):
+    for j, b in enumerate(fila):
+        print(f"Bloque ({i},{j}):")
+        print(b)
