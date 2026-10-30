@@ -66,6 +66,86 @@ import numpy as np
 
 
 # ---------------------------------------------------------------------
+# Funcion del ejercicio 6b (copiada aqui para que este archivo sea
+# autocontenido y no haga falta importar nada)
+#   f(x) = (1 - x_n)^3 * sum_{i<n} x_i^2 + x_n^2
+# ---------------------------------------------------------------------
+def fun_mlocal(x, valfun=True, gradfun=False, hesfun=False):
+    """
+    Evalua f(x), grad f(x) y/o Hess f(x) de
+        f(x) = (1 - x_n)^3 * sum_{i<n} x_i^2 + x_n^2.
+
+    Parametros
+    ----------
+    x : array_like de n >= 2 componentes.
+    valfun, gradfun, hesfun : bool
+        Indican que calcular (por defecto: True, False, False).
+
+    Retorna
+    -------
+    Solo lo pedido, en el orden (f, df, d2f):
+        f   : float
+        df  : ndarray (n,)
+        d2f : ndarray (n, n)
+    Si se pidio una sola cosa, se retorna directamente (no una tupla).
+    """
+    # ---------------------------------------------------------------
+    # Paso 1: validar y normalizar la entrada
+    # ---------------------------------------------------------------
+    x = np.asarray(x, dtype=float).ravel()
+    n = x.size
+    if n < 2:
+        raise ValueError(f"Se requiere n >= 2 (recibido: n = {n}).")
+    if not (valfun or gradfun or hesfun):
+        raise ValueError("Al menos uno de valfun, gradfun, hesfun debe ser True.")
+
+    # ---------------------------------------------------------------
+    # Paso 2: cantidades comunes (se calculan una sola vez)
+    # ---------------------------------------------------------------
+    xhat = x[:-1]            # (x_1, ..., x_{n-1})
+    xn = x[-1]               # x_n
+    t = 1.0 - xn             # t = 1 - x_n
+    S = xhat @ xhat          # S = sum_{i<n} x_i^2
+    t2 = t * t               # t^2
+    t3 = t2 * t              # t^3
+
+    resultados = []
+
+    # ---------------------------------------------------------------
+    # Paso 3: valor de la funcion
+    # ---------------------------------------------------------------
+    if valfun:
+        resultados.append(t3 * S + xn * xn)
+
+    # ---------------------------------------------------------------
+    # Paso 4: gradiente
+    # ---------------------------------------------------------------
+    if gradfun:
+        g = np.empty(n)
+        g[:-1] = 2.0 * t3 * xhat             # df/dx_i = 2 t^3 x_i,  i < n
+        g[-1] = -3.0 * t2 * S + 2.0 * xn     # df/dx_n = -3 t^2 S + 2 x_n
+        resultados.append(g)
+
+    # ---------------------------------------------------------------
+    # Paso 5: Hessiana
+    # ---------------------------------------------------------------
+    if hesfun:
+        H = np.zeros((n, n))
+        idx = np.arange(n - 1)
+        H[idx, idx] = 2.0 * t3               # bloque (n-1)x(n-1): 2 t^3 I
+        col = -6.0 * t2 * xhat               # d2f/dx_i dx_n = -6 t^2 x_i
+        H[:-1, -1] = col                     # ultima columna
+        H[-1, :-1] = col                     # ultima fila (simetria)
+        H[-1, -1] = 6.0 * t * S + 2.0        # d2f/dx_n^2
+        resultados.append(H)
+
+    # ---------------------------------------------------------------
+    # Paso 6: devolver lo pedido
+    # ---------------------------------------------------------------
+    return resultados[0] if len(resultados) == 1 else tuple(resultados)
+
+
+# ---------------------------------------------------------------------
 # Auxiliares
 # ---------------------------------------------------------------------
 def _validar(x, d, dphi0, alpha0):
@@ -186,11 +266,9 @@ def regla_goldstein(f, x, d, phi0, dphi0, alpha0=1.0, c=0.25,
 
 
 # =====================================================================
-# PRUEBAS  (usa fun_mlocal del ejercicio 6b)
+# PRUEBAS  (usan la fun_mlocal definida arriba)
 # =====================================================================
 if __name__ == "__main__":
-    from ejercicio6b_fun_mlocal import fun_mlocal
-
     np.set_printoptions(precision=6, suppress=True)
 
     # Punto de prueba y direccion de maximo descenso d = -grad f(x)
